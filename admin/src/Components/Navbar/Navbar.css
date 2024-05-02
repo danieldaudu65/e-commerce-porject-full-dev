@@ -1,0 +1,44 @@
+.navbar{
+    width: 100%;
+    padding: 3rem 5rem;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.552);
+    justify-content: space-between;
+    z-index: 100;
+}
+
+ .cart_logo{
+    font-size: 45px;
+    color: #D26C0D;
+    font-weight: 800;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.navbar .admin-photo{
+    width: 70px;
+}
+
+.navbar  ul{
+    list-style: none;
+    display: flex;
+    gap: 5rem;
+    justify-content: center;
+    align-items: center;
+}
+.navbar  ul a{
+    font-size: 26px;
+    font-weight: 500;
+    text-decoration: none;
+    color: black;
+}
+
+.profile-pic{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.arrow-down{
+    font-size: 22px;
+}

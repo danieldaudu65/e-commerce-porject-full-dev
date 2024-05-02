@@ -1,0 +1,5 @@
+Multer is used to install images that we will use to upload in our database
+
+Express 
+
+cors to add te permition to our application 
