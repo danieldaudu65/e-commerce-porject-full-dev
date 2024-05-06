@@ -51,11 +51,12 @@ const Addproduct = () => {
             }).then((resp) => resp.json()).then((data) => {
                 if (data.success) {
                     alert('Product Added');
+                    window.location.replace('/')
                 } else {
                     alert('Product Added');
+                    window.location.replace('/')
                 }
             })
-            
         }
     };
 

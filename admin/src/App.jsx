@@ -11,8 +11,7 @@ const App = () => {
     <BrowserRouter>
     <Navbar />
       <Routes>
-        <Route element={<Addproduct />} path='/add-product' />
-        <Route element={<Removeproduct />} path='/remove-product' />
+        <Route element={<Addproduct />} path='/' />
         <Route element={<Allproducts />} path='/all-product' />
       </Routes>
     </BrowserRouter>
