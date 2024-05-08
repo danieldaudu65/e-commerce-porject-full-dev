@@ -17,7 +17,6 @@
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.571);
     padding: 2rem 4rem;
     margin-top: 3rem;
-    border: ;
     max-height: 800px; 
     overflow-y: auto;
 }
@@ -48,7 +47,6 @@
 
 .listproductitem {
     width: 150px;
-    margin-left: ;
 }
 
 .remove-item{

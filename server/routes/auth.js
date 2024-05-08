@@ -30,7 +30,7 @@ authrouter.post('/signup', async (req, res) => {
 
         // Create a cart object for the user
         const cart = {};
-        for (let i = 0; i < 300; i++) {
+        for (let i = 0; i < 30; i++) {
             cart[i] = 0;
         }
 
@@ -48,17 +48,15 @@ authrouter.post('/signup', async (req, res) => {
         await newUser.save();
 
         // Generate JWT token
-        const token = jwt.sign({ userId: newUser.userId }, process.env.JWT_SECRET);
 
         // Send success response with token and user details
         res.status(200).send({
             status: 'User created successfully',
-            token,
             user: {
                 userId: newUser.id,
                 email: newUser.email,
                 password: newUser.password,
-                fullName: newUser.fulllName,
+                fullName: newUser.fullName,
             }
         });
     } catch (error) {
@@ -83,7 +81,7 @@ authrouter.post('/login', async (req, res) => {
         const user = await newMemberSchema2.findOne({ email });
 
         // if user not found, return error
-    if (!user) {
+        if (!user) {
             return res.status(400).send({ status: 'User not found' });
         }
 
@@ -96,16 +94,22 @@ authrouter.post('/login', async (req, res) => {
         // generate jwt token
         const token = jwt.sign({
             _id: user._id,
-            email: user.email,
-        }, process.env.JWT_SECRET)
+        }, process.env.JWT_SECRET);
 
 
-        res.status(200).send({ status: 'Login successful', user, token});
+        user.is_online = true;
+        await user.save();
+
+
+        res.status(200).send({ status: 'Login successful', user, token });
     } catch (error) {
         console.error(error);
         res.status(500).send({ status: 'Internal Server Error' });
     }
 });
+
+
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjM5M2FhNTEwOGQyNzUwMGViNTVjZmIiLCJlbWFpbCI6InNwZW5jZXJvZ2JlNDE5QGdtYWlsLmNvbSIsImlhdCI6MTcxNTAyNjYxMH0.a4nZCTr9CuYgcbTImwSs1n1_RbO4aPDECcHMiTx9Olw
 
 
 
@@ -121,7 +125,7 @@ authrouter.post('/login', async (req, res) => {
 //     if (!email) {
 //         return res.status(400).send({status: "PLease fill in Your email"})
 //     }
-    
+
 //     try {
 
 //         sendOTP(email,otp)
@@ -151,13 +155,13 @@ authrouter.post('/logout', async (req, res) => {
         const user = jwt.verify(token, process.env.JWT_SECRET);
 
         // update user document online status
-        await User.updateOne({_id: user._id}, {is_online: false});
+        await User.updateOne({ _id: user._id }, { is_online: false });
 
-        res.status(200).send({ 'status': 'success', 'msg': 'success' });       
+        res.status(200).send({ 'status': 'success', 'msg': 'success' });
     } catch (error) {
         console.error(error);
-        if(error.name === 'JsonWebTokenError') {
-            return res.status(400).send({status: 'error', msg: 'Token verification failed'});
+        if (error.name === 'JsonWebTokenError') {
+            return res.status(400).send({ status: 'error', msg: 'Token verification failed' });
         }
         // Sending error response if something goes wrong
         res.status(500).send({ "status": "some error occurred", "msg": error.message });

@@ -8,6 +8,7 @@ const path = require('path')
 const cors = require('cors');
 const router = require('./routes/product');
 const authrouter = require('./routes/auth');
+const cartrouter = require('./routes/cart');
 require('dotenv').config()
 
 app.use(express.json())
@@ -52,6 +53,8 @@ app.use('/routes/product', router )
 // user api link
 app.use('/routes/auth', authrouter)
 
+
+app.use('/cart', require('./routes/cart'))
 
 // Listen to the port
 app.listen(port, (error) =>{
