@@ -55,6 +55,8 @@ app.use('/routes/auth', authrouter)
 
 
 app.use('/cart', require('./routes/cart'))
+app.use('/prof', require('./routes/prof'))
+app.use('/user', require('./routes/user'))
 
 // Listen to the port
 app.listen(port, (error) =>{

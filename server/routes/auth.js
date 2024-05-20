@@ -6,7 +6,7 @@ const { v4: uuidv4 } = require('uuid');
 const jwt = require('jsonwebtoken');
 const { sendOTP } = require('../util/nodemailer');
 require('dotenv').config()
-
+ 
 
 //  end point for user to sign-in schema
 
@@ -52,12 +52,7 @@ authrouter.post('/signup', async (req, res) => {
         // Send success response with token and user details
         res.status(200).send({
             status: 'User created successfully',
-            user: {
-                userId: newUser.id,
-                email: newUser.email,
-                password: newUser.password,
-                fullName: newUser.fullName,
-            }
+            user: newUser
         });
     } catch (error) {
         console.error('Error creating user:', error);

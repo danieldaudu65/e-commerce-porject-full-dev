@@ -1,7 +1,6 @@
 const express = require('express')
 const newMemberSchema = require('../model/newMember')
 const router = express.Router()
-const addressBook = require('../model/AddressBool')
 const jwt = require('jsonwebtoken');
 require('dotenv').config()
 
@@ -35,44 +34,64 @@ router.post('/change-password', async (req, res) => {
         console.error(error);
         return res.status(500).send({ status: 'Internal Server Error' });
     }
-})
+})   
 
-  
 router.post('/add-address', async (req, res) => {
+    const { name, number, address, city , state } = req.body
+    const token  = req.header('auth-token');
+
+    if (!name || !number || !address || !city || !state || !token) {
+        return res.status(400).send({ status: "error", msg: "all fields must be filled" });
+    }
+
     try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-        // All field needed by the user to fill
-        const { fullName, phoneNumber, address, city, state } = req.body
+        const user = await newMemberSchema.findOne({ _id: decoded._id });
+        if (!user) {
+            return res.status(404).send({ error: 'User not found' });
+        }
+ 
+        user.addresses.push({ name, number, address, city, state });
 
-        const newAddress = new addressBook({
-            fullName,
-            phoneNumber,
-            address,
-            city,
-            state
-        })
-        
-        // Generate a unique token for user address
-        const addressToken = jwt.sign({
-            _id: user._id,
-            address
-        }. process.env.JWT_SECRET)
-    
-        await newAddress.save()
+        await user.save();
+        const newToken = jwt.sign({_id : user._id}, process.env.JWT_SECRET)
 
-        res.status(201).send({ status: 'Address Succesfully Added', address: newAddress,  addressToken })
+        res.status(200).send({ message: 'Address added successfully', user: user , Token: newToken});
+    } catch (error) {
+        console.error('Error adding address:', error);
+        res.status(500).send({ error: error.message || 'Internal server error' });
+    }
+});  
+
+
+router.get('/get-address', async (req,res) =>{
+    const token = req.header('auth-token');
+
+    if (!token) {
+        return res.status(401).send({ error: 'Authentication token not found' });
+    }
+    try{
+        const decoded = jwt.verify(token, process.env.JWT_SECRET)
+
+        const user = await newMemberSchema.findOne({_id:decoded._id});
+
+        const userAddress = user.addresses
+
+        res.status(200).send({ userAddress})
+
     }
     catch (error) {
-        console.error('Error occured while Adding', error)
-        res.status(500).send({ message: 'Internal Server Error' })
+        console.error('Error verifying token:', error);
+        res.status(401).send({ error: 'Invalid token' });
     }
-})
+} )
 
 
-// router.post('/edit-adressBook', async (req,res) =>{
-//     try{
 
-//     }
-// })
+
+
+
+
 
 module.exports = router

@@ -2,15 +2,23 @@ const mongoose = require('mongoose')
 
 const newMemberScheema2 = new mongoose.Schema({
     fullName: String,
-    email: {
-        type: String,
-        unique: true
-    },
+    email: String,
     phoneNumber: Number,
     password: String,
-    cartData : Object,
-    is_online: {type: Boolean ,defailt: true},
-    orders: {type: Number, default: 0}
-}, {collection: 'user'})
+    cartData: Object,
+    image: String,
+    cardDetails: String,
+    is_online: { type: Boolean, defailt: true },
+    orders: Object,
+    addresses: [
+        {
+            name: String,
+            number: Number,
+            address: String,
+            city: String,
+            state: String
+        }
+    ],
+}, { collection: 'user' })
 
-module.exports = mongoose.model('newmembership' , newMemberScheema2)
+module.exports = mongoose.model('newmembership', newMemberScheema2)

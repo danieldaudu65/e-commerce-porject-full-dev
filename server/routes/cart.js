@@ -6,76 +6,82 @@ const newMember = require('../model/newMember');
 require('dotenv').config()
 
 
-// to fetch user
-
-// const fetchUser = async (req, res, next) => {
-//     const token = req.header('auth-token');
-
-//     if (!token) {
-//         res.status(400).send({ error: 'Please authenticate using valid Token' })
-//     }
-//     else {
-//         try {
-//             const data = jwt.verify(token, 'secret');
-//             req.user = data._id;
-//             next();
-//         }
-//         catch (error) {
-//             res.status(400).send({ error: "Please authicate using a Valid token" })
-//         }
-//     }
-// }
 
 cartrouter.post('/addtocart', async (req, res) => {
+    const token = req.headers['auth-token'];
+    const itemId = req.body.itemId;
 
-    const { token } = req.body;
-
-    if (!token) {
-        return res.status(400).send({ status: "error", msg: "Please authenticate using a valid token" });
-    }
- 
     try {
-        // Verify the token sent from the frontend
-        const decoded = jwt.verify(token, 'secret');
-        
-        const userData = await newMember.findOne({ _id: decoded._id });
+        // Verify the token
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        console.log('User ID:', decoded._id);
+        console.log('Item ID:', itemId);
+
+        const userData = await newMember.findOne({ _id: decoded._id })
 
         if (!userData) {
-            return res.status(400).send({ status: "error", msg: "User not found" });
+            return res.status(400).send({ error: "user not found" })
         }
 
-        
-        res.status(200).send({ status: 'Cart updated successfully' });
+        // Update the user's cart data
+        userData.cartData[itemId] += 1;
+
+        await newMember.findOneAndUpdate({ _id: decoded._id }, { cartData: userData.cartData });
+
+        res.status(200).send({ message: 'Item added to cart successfully' });
     } catch (error) {
-        console.error('Error adding to cart:', error);
-        res.status(500).send({ status: 'Internal Server Error' });
+        console.error('Error verifying token:', error);
+        res.status(401).send({ error: 'Invalid token' });
     }
 });
-
-
 
 //  endpoint to remove from cart 
 
 cartrouter.post('/removefromcart', async (req, res) => {
+    const token = req.headers['auth-token'];
+    const itemId = req.body.itemId;
 
-    // const userdata = await newMember.findOne({ _id: req.user._id })
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // // check if the user cart data is greater than 0
+        const userData = await newMember.findOne({ _id: decoded._id })
 
-    // if (userdata.cartData[req.body.itemid] > 0) {
-    //     userdata.cartData[req.body.itemid] -= 1;
-    // }
-    // await newMember.findOneAndUpdate({ _id: req.user._id }, { cartData: userdata.cartData })
+        // Check if the user's cart data for the specified item is greater than 0
+        if (userData.cartData[itemId] > 0) {
+            userData.cartData[itemId] -= 1;
+        }
 
-    // res.status(200).send({ status: 'Cart Remove' })
-})
+        await newMember.findOneAndUpdate({ _id: decoded._id }, { cartData: userData.cartData })
 
+        res.status(200).send({ status: 'Item removed from cart' });
+
+    } catch (error) {
+        console.error('Error verifying token:', error);
+        res.status(401).send({ error: 'Invalid token' });
+    }
+});
+
+
+// recover cart data from user database
 
 cartrouter.get('/getcartfromuser', async (req, res) => {
+    const token  = req.header('auth-token');
 
-    // const userData = await newMember.findOne({_id: req.user.id})
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // res.status(200).send(userData.cartData)
+        const userData = await newMember.findOne({ _id: decoded._id });
 
-})
+        const userdatacart = userData.cartData
+
+        res.status(200).send({ userdatacart });
+    }
+    catch (error) {
+        console.error('Error verifying token:', error);
+        res.status(401).send({ error: 'Invalid token' });
+    }
+});
+
+
 module.exports = cartrouter
