@@ -6,9 +6,10 @@ const jwt = require('jsonwebtoken')
 const multer = require('multer')
 const path = require('path')
 const cors = require('cors');
-const router = require('./routes/product');
+const router = require('./admin/adminRoutes/product');
 const authrouter = require('./routes/auth');
 const cartrouter = require('./routes/cart');
+const user = require('./model/user');
 require('dotenv').config()
 
 app.use(express.json())
@@ -22,9 +23,6 @@ mongoose.connect(process.env.MONGO_URL)
 .catch((err) => { 
     console.error('MongoDB connection error:', err);
 }); 
-app.get('/', (req,res)=> {
-    res.send('Express App Is Runnig')
-})
 
 // Image storage engine
 const storage  = multer.diskStorage({
@@ -46,17 +44,19 @@ app.post('/upload', upload.single('product'),(req,res) =>{
     })
 })
 
-
 // product api link
 app.use('/routes/product', router )
 
 // user api link
 app.use('/routes/auth', authrouter)
 
-
 app.use('/cart', require('./routes/cart'))
 app.use('/prof', require('./routes/prof'))
 app.use('/user', require('./routes/user'))
+
+// admin api links
+app.use('/orders', require('./admin/adminRoutes/ordersRoute'))
+app.use('/adminauth', require('./admin/adminRoutes/auth'))
 
 // Listen to the port
 app.listen(port, (error) =>{

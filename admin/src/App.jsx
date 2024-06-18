@@ -1,18 +1,23 @@
 import React from 'react'
 import './App.css'
-import Navbar from './Components/Navbar/Navbar'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Addproduct from './Pages/AddProduct/Addproduct'
-import Removeproduct from './Pages/RemoveProduct/Removeproduct'
 import Allproducts from './Pages/AllProduct/Allproducts'
+import ViewOrders from './Pages/View-orders/ViewOrders'
+import Login from './Pages/Login/Login'
+import Home from './Pages/Home/Home'
 
 const App = () => {
   return (
     <BrowserRouter>
-    <Navbar />
+    {/* <Navbar /> */}
       <Routes>
-        <Route element={<Addproduct />} path='/' />
+        <Route path='/' element = {<Login />} />
+        <Route path='/home' element = {<Home />} />
+
+        <Route element={<Addproduct />} path='/add-product' />
         <Route element={<Allproducts />} path='/all-product' />
+        <Route element={<ViewOrders />} path='/view-orders' />
       </Routes>
     </BrowserRouter>
   )

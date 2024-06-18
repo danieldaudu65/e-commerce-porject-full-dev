@@ -7,7 +7,7 @@ const userAddressBook = new mongoose.Schema({
     },
     phoneNumber: {
         type: Number,
-        required: truez
+        required: true
     },
     address: {
         type: String,

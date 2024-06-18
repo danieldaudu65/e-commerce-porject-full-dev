@@ -1,8 +1,8 @@
 const express = require('express');
 const cartrouter = express.Router();
-const products = require('../model/products');
+const products = require('../admin/model/products');
 const jwt = require('jsonwebtoken');
-const newMember = require('../model/newMember');
+const newMember = require('../model/user');
 require('dotenv').config()
 
 

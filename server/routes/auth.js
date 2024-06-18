@@ -1,12 +1,12 @@
 const express = require('express');
 const authrouter = express.Router();
-const newMemberSchema2 = require('../model/newMember');
+const User = require('../model/user');
 const bcrypt = require('bcrypt');
 const { v4: uuidv4 } = require('uuid');
 const jwt = require('jsonwebtoken');
 const { sendOTP } = require('../util/nodemailer');
 require('dotenv').config()
- 
+
 
 //  end point for user to sign-in schema
 
@@ -20,8 +20,8 @@ authrouter.post('/signup', async (req, res) => {
         }
 
         // Check if the user email already exists
-        const existingUser = await newMemberSchema2.findOne({ email });
-        if (existingUser) {
+        const XUser = await User.findOne({ email });
+        if (XUser) {
             return res.status(400).send({ status: 'User email already exists' });
         }
 
@@ -34,15 +34,23 @@ authrouter.post('/signup', async (req, res) => {
             cart[i] = 0;
         }
 
-        // Create a new user document
-        const newUser = new newMemberSchema2({
-            email,
-            password: hashedPassword,
-            phoneNumber,
-            fullName,
-            cartData: cart,
-            userId: uuidv4()
-        });
+        const orders = cart
+        const newUser = new User()
+        newUser.fullName = fullName
+        newUser.email = email
+        newUser.phoneNumber = phoneNumber
+        newUser.password = hashedPassword
+        newUser.cartData = cart
+        newUser.image = ''
+        newUser.Saved_items = ''
+        newUser.Card = ''
+        newUser.is_online = true
+        newUser.is_deleted = false
+        newUser.orders = orders
+        newUser.timeStanp = Date.now()
+        newUser.addresses = []
+        newUser.savedItems = []
+
 
         // Save the new user to the database
         await newUser.save();
@@ -73,7 +81,7 @@ authrouter.post('/login', async (req, res) => {
 
     try {
         // Check if the user exists based on email
-        const user = await newMemberSchema2.findOne({ email });
+        const user = await User.findOne({ email });
 
         // if user not found, return error
         if (!user) {
@@ -90,12 +98,8 @@ authrouter.post('/login', async (req, res) => {
         const token = jwt.sign({
             _id: user._id,
         }, process.env.JWT_SECRET);
-
-
         user.is_online = true;
         await user.save();
-
-
         res.status(200).send({ status: 'Login successful', user, token });
     } catch (error) {
         console.error(error);
@@ -108,30 +112,23 @@ authrouter.post('/login', async (req, res) => {
 
 
 
-
-
-
-
 // //  To reset Password
-// router.post('/reset-password', async (req,res) =>{
-//     const { email, otp } = req.body
+// router.post('/reset-password', async (req, res) => {
 
-//     // check if the email field isnt empty
-//     if (!email) {
-//         return res.status(400).send({status: "PLease fill in Your email"})
-//     }
+
+//     const { email } = req.body
+//     const token = req.headers('auth-token')
 
 //     try {
 
-//         sendOTP(email,otp)
-//         // try if user email exist in the database
-//         const user = await newMemberSchema.findOne({email});
+//         const decoded = jwt.verify(token, process.env.JWT_SECRET);
+//         const user = await newMember.findById(decoded._id);
 
-//         if (!user) {
-//             return res.status(404).send({status: "User not existing PLease Sign in"})
-//         }
+
+
 //     }
-//     catch{
+
+//     catch {
 
 //     }
 // })

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { FaTimes } from 'react-icons/fa';
 import './Allproducts.css'
+import Navbar from '../../Components/Navbar/Navbar';
 
 const Allproducts = () => {
 
@@ -27,20 +28,21 @@ const Allproducts = () => {
     }, [])
 
 
-    const removePRoducts = async (id)=>{
+    const removePRoducts = async (id) => {
         await fetch('http://localhost:4000/routes/product/removeproduct', {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
-                'Content-Type' : 'application/json'
+                'Content-Type': 'application/json'
             },
-            body:JSON.stringify({id:id})
+            body: JSON.stringify({ id: id })
         })
         await fetchInfo()
     }
-
     return (
-        <div className='all-product'>
+        <>
+        <Navbar />
+          <div className='all-product'>
             <span className="cart_logo">Cart</span>
             <h1>All Product List</h1>
             <div className="product-list-container">
@@ -59,13 +61,15 @@ const Allproducts = () => {
                             <p>{product.name}</p>
                             <p>${product.oldproductPrice}</p>
                             <p>${product.newproductPrice}</p>
-                            <FaTimes className='remove-item' onClick={()=>{removePRoducts(product.id)}} />
+                            <FaTimes className='remove-item' onClick={() => { removePRoducts(product.id) }} />
                         </div>
                     })}
                 </div>
 
             </div>
         </div>
+        </>
+      
     )
 }
 

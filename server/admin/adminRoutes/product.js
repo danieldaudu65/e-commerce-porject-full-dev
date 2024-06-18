@@ -88,9 +88,7 @@ router.get('/all_product', async (req, res) => {
 })
 
 
-router.post('/addtocart', async (req,res) => {
-    console.log(req.body);
-})
+
   
 
 module.exports = router

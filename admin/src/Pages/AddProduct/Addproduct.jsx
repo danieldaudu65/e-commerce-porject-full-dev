@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import upload from '../../assets/upload.png'
 import './Addproduct.css'
+import Navbar from '../../Components/Navbar/Navbar';
 
 const Addproduct = () => {
 
@@ -61,30 +62,34 @@ const Addproduct = () => {
     };
 
     return (
-        <div className='add-product'>
-            <span className="cart_logo">Cart</span>
-            <h1>Add A Product</h1>
-            <p>Please put in the details of the Product</p>
-            <div className="inputfield">
-                <div className="price-input">
-                    <input value={productData.name} onChange={changeHandlier} type="text" name='name' placeholder='Product Name' />
+        <>
+            <Navbar />
+            <div className='add-product'>
+                <span className="cart_logo">Cart</span>
+                <h1>Add A Product</h1>
+                <p>Please put in the details of the Product</p>
+                <div className="inputfield">
+                    <div className="price-input">
+                        <input value={productData.name} onChange={changeHandlier} type="text" name='name' placeholder='Product Name' />
+                    </div>
+                    <div className="price-input">
+                        <input value={productData.oldproductPrice} onChange={changeHandlier} type="text" name='oldproductPrice' placeholder='Product Price' />
+                    </div>
+                    <div className="price-input">
+                        <input value={productData.newproductPrice} onChange={changeHandlier} type="text" name='newproductPrice' placeholder='New Price' />
+                    </div>
+                    <div className="add-image">
+                        <label htmlFor="file-input" className='file-input'>
+                            Add Product Image
+                            <img src={image ? URL.createObjectURL(image) : upload} alt="" className='upload' />
+                        </label> :
+                        <input onChange={imageHandlier} type="file" name='image' id='file-input' className='input-image' />
+                    </div>
+                    <button onClick={() => addProduct()} className='addproduct'>Add</button>
                 </div>
-                <div className="price-input">
-                    <input value={productData.oldproductPrice} onChange={changeHandlier} type="text" name='oldproductPrice' placeholder='Product Price' />
-                </div>
-                <div className="price-input">
-                    <input value={productData.newproductPrice} onChange={changeHandlier} type="text" name='newproductPrice' placeholder='New Price' />
-                </div>
-                <div className="add-image">
-                    <label htmlFor="file-input" className='file-input'>
-                        Add Product Image
-                        <img src={image ? URL.createObjectURL(image) : upload} alt="" className='upload' />
-                    </label> :
-                    <input onChange={imageHandlier} type="file" name='image' id='file-input' className='input-image' />
-                </div>
-                <button onClick={() => addProduct()} className='addproduct'>Add</button>
             </div>
-        </div>
+            
+        </>
     )
 }
 
