@@ -83,5 +83,4 @@ cartrouter.get('/getcartfromuser', async (req, res) => {
     }
 });
 
-
 module.exports = cartrouter

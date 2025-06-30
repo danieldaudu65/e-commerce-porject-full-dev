@@ -24,7 +24,6 @@ router.post('/addproduct', async (req, res) => {
         else {
             id = 1
         }
-
         const product = new products({
             id: id,
             name,
@@ -86,9 +85,6 @@ router.get('/all_product', async (req, res) => {
 
     }
 })
-
-
-
   
 
 module.exports = router

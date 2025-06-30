@@ -34,22 +34,22 @@ authrouter.post('/signup', async (req, res) => {
             cart[i] = 0;
         }
 
-        const orders = cart
-        const newUser = new User()
-        newUser.fullName = fullName
-        newUser.email = email
-        newUser.phoneNumber = phoneNumber
-        newUser.password = hashedPassword
-        newUser.cartData = cart
-        newUser.image = ''
-        newUser.Saved_items = ''
-        newUser.Card = ''
-        newUser.is_online = true
-        newUser.is_deleted = false
-        newUser.orders = orders
-        newUser.timeStanp = Date.now()
-        newUser.addresses = []
-        newUser.savedItems = []
+        const orders = []; // orders should be an array of ObjectIds, not the cart itself
+        const newUser = new User({
+            fullName,
+            email,
+            phoneNumber,
+            password: hashedPassword,
+            cartData: cart,
+            image: '',
+            savedItems: [],
+            Card: '',
+            is_online: true,
+            is_deleted: false,
+            orders,
+            timeStanp: Date.now(),
+            addresses: []
+        });
 
 
         // Save the new user to the database
@@ -87,13 +87,12 @@ authrouter.post('/login', async (req, res) => {
         if (!user) {
             return res.status(400).send({ status: 'User not found' });
         }
-
         // to compare the password passed by the user vs the password in the database
         const comparePassword = await bcrypt.compare(password, user.password);
+        //  if password not same after bcrytping it return Incorrect password
         if (!comparePassword) {
             return res.status(401).send({ status: 'Incorrect details' });
         }
-        //  if password not same after bcrytping it return Incorrect password
         // generate jwt token
         const token = jwt.sign({
             _id: user._id,

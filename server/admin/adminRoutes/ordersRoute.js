@@ -107,12 +107,11 @@ router.post('/create-order', async (req, res) => {
             totalAmount += item.productPrice * item.quantity;
         }
 
-        const order = new Order({
-            orderItems: orderItemsId,
-            user: user._id,
-            totalAmount: totalAmount,
-            status: 'pending'
-        });
+        const order = new Order();
+        order.orderItems = orderItemsId,
+        order.user = user._id,
+        order.totalAmount = totalAmount,
+        order.status = 'pending'
 
         const savedOrder = await order.save();
 
